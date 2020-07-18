@@ -1,0 +1,55 @@
+http:
+  port: 8080
+apiEndpoints:
+  ping:
+    host: '*'
+    paths: '/ip'
+  foo:
+    host: '*'
+    paths: '/foo'
+  bar:
+    host: '*'
+    paths: '/bar'
+serviceEndpoints:
+  httpbin_svc:
+    url: 'https://httpbin.org'
+  foo_svc:
+    url: 'http://foo-svc.learn-ecs:8080'
+  bar_svc:
+    url: 'http://bar-svc.learn-ecs:8080'
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+pipelines:
+  ping:
+    apiEndpoints:
+      - ping
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: httpbin_svc 
+              changeOrigin: true
+
+  foo:
+    apiEndpoints:
+      - foo
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: foo_svc 
+              changeOrigin: true
+
+  bar:
+    apiEndpoints:
+      - bar
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: bar_svc 
+              changeOrigin: true
